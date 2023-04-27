@@ -1,0 +1,160 @@
+package windows;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Main {
+	
+	// Array na nag store of users
+	static String[][] accounts = {{"Francis", "asdassd", "0"}, {"Alan", "123456", "1"}, {"Kylle", "654321", "2"}};
+
+	
+	// Array para mag store sa data scores sa mga students
+	static ArrayList<ArrayList<Object>> students_data = new ArrayList<ArrayList<Object>>();
+	
+	// Mao ni ang function na gipa run og una
+	public static void main(String[] args) {
+		dashboard();
+	}
+	
+// Authentication Functions Start
+	
+	// Mao ni ang function na nag ask og username og password sa users para maka login
+	static void loginAccount() {
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter Username: ");
+		String username = input.nextLine();
+		
+		boolean found = false;
+		
+		for(String[] account : accounts) {
+			if(account[0].equalsIgnoreCase(username)) {
+				while(!found) {
+					System.out.print("Enter Password: ");
+					String password = input.nextLine();
+					if(account[1].equalsIgnoreCase(password)) {
+						found = !found;
+						break;
+					} else {
+						System.out.println("Password is incorrect!");
+					}
+				}
+				
+				
+			}
+		}
+		loginSuccess(found, username);
+		
+	}
+	
+	// Mao ni ang function na mag ask sa user og bag o na username or password
+	static void createAccount() {
+		boolean has_username = false;
+	    boolean has_password = false;
+
+	    Scanner input = new Scanner(System.in);
+		
+		ArrayList<String> new_account = new ArrayList<String>();
+		
+		String new_username = "";
+		String new_password = "";
+		while (!has_username) {
+			System.out.print("Enter New Username: ");
+	        new_username = input.nextLine();
+	        if (!new_username.isEmpty()) {
+	            has_username = true;
+	            new_account.add(new_username);
+	        } else {
+	            System.out.println("Please add a username");
+	        }
+	    }
+
+	    while (!has_password) {
+	    	System.out.print("Enter New Password: ");
+	        new_password = input.nextLine();
+	        if (!new_password.isEmpty()) {
+	            has_password = true;
+	            new_account.add(new_password);
+	        } else {
+	            System.out.println("Please add your password");
+	        }
+	    }
+	    
+	    accounts = Arrays.copyOf(accounts, accounts.length + 1);
+	    
+	    accounts[accounts.length - 1] = new_account.toArray(new String[new_account.size()]);
+	    
+	    loginSuccess(has_password, new_username);
+		
+	}
+	
+	// Mao ni ang function na mo detect kung ang username og password kay nag exist siya sa atung array na accounts
+	static void loginSuccess(boolean login_success, String username) {
+		
+		if(login_success) {
+			spaceUp();
+			System.out.println(username + "! Welcome to Teacher Grade Portal");
+			optionDashboard();
+		} else {
+			System.out.println("Username does not exist!");
+			loginAccount();
+		}
+	}
+	
+	// Mao ni ang function na mag display og mga options kung mag login baka or mag register
+	static void dashboard() {
+		System.out.println("+-----------------------------------+");
+		System.out.println("|  Welcome to Teacher Grade Portal  |");
+		System.out.println("+-----------------------------------+");
+		System.out.println("|    1 - Login  |  2 - Register     |");
+		System.out.println("+-----------------------------------+");
+		options();
+	}
+	
+	// Mao ni ang function na mag input kung unsa na options ila e napili
+	static void options() {
+		Scanner input = new Scanner(System.in);
+		System.out.print("Option: ");
+		try {
+			int option = input.nextInt();
+			if(option == 1) {
+				loginAccount();
+			} else if(option == 2) {
+				createAccount();
+			} else {
+				optionsError();
+			}
+		} catch(Exception e) {
+			optionsError();
+			options();
+		}
+		
+	}
+	
+	// Mao ni ang function na mag ask sa user kung mo logout naba sila
+	static void logout() {
+		Scanner input = new Scanner(System.in);
+		System.out.println("1 - Logout");
+		System.out.print("Option: ");
+		int logout = input.nextInt();
+		if(logout == 1) {
+			dashboard();
+		} else {
+			optionsError();
+			logout();
+		}
+	}
+	
+	// Authentication Functions Ends
+	
+// Teacher Grades Function Start
+	
+	// Mao ni ang function na nag print sa Name og Total na scores
+	static void overallGradeScore() {
+		System.out.println("+----------------------------------------------------------------------------------------------------------------------+");
+		System.out.println("|  Title | Quiz 1 | Quiz 2 | Quiz 3 | Quiz 4 | Quiz 5 | P1 | P2 | Oral 1 | Oral 2 | Exam | Inital Grade | Final Grade  |");
+		System.out.println("+--------+-------+-------+-------+-------------------------------------------------------------------------------------+");
+		System.out.println("|  Total |   20   |   10   |   20   |   20   |   20   | 10 |  5 |   10   |   10   |  50  |     100      |     100      |");
+		System.out.println("+----------------------------------------------------------------------------------------------------------------------+");
+		addStudentScore();
